@@ -60,8 +60,8 @@ class TCPTestServer:
             while self.running:
                 # Send periodic heartbeat
                 try:
+                    input("Press Enter to send heartbeat...")
                     client_socket.send(b"HEARTBEAT\n")
-                    time.sleep(15)
                 except socket.error:
                     print(f"[!] Client {client_addr} disconnected")
                     break
