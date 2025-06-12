@@ -182,11 +182,7 @@ class TCPConnectionGuesser:
                 break
 
     def _classify_response(self, packet_size, flags):
-        """Classify response type based on size and flags"""
-        # RST response
-        if flags & 0x04:
-            return RESPONSE_RST
-             
+        """Classify response type based on packet size only"""
         # Challenge ACK (smaller response, usually just ACK)
         if packet_size == 52:  # IP(20) + TCP(20) + minimal data
             return RESPONSE_CHALLENGE_ACK
