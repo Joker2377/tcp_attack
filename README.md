@@ -1,9 +1,9 @@
 # Off-Path TCP Hijacking via a Wi-Fi Frame-Size Side Channel
 
-> Code implementation for the paper
-> Computer Network final project
-> **Ziqiang Wang et al., “Off-Path TCP Hijacking in Wi-Fi Networks:  
-> A Packet-Size Side-Channel Attack,” NDSS 2025.**
+> Code implementation for the paper<br>
+> Computer Network final project<br>
+> **Ziqiang Wang et al., “Off-Path TCP Hijacking in Wi-Fi Networks:**<br>
+> **A Packet-Size Side-Channel Attack,” NDSS 2025.**
 
 Although Wi-Fi encryption protects packet contents, it does not necessarily hide the size of each encrypted frame. Different TCP validation paths can produce responses with different lengths. By sending controlled probes and observing the resulting frame-size classes, an off-path observer may progressively infer otherwise unknown TCP connection state.
 
